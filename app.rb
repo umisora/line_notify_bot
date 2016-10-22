@@ -1,6 +1,11 @@
 require 'sinatra'
 require 'line/bot'
 
+# 32文字
+get '/jftiajp6trq6bvvs79s9qqp6qgvr4z2a' do
+  "Hello world"
+end
+
 def client
   @client ||= Line::Bot::Client.new { |config|
     config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
