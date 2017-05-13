@@ -19,3 +19,7 @@ LINEに通知が飛ぶような、任意のWebhookを受けてLineに通知す�
 
 # 参考
 http://qiita.com/fullmated/items/81d1a49ed3d49eda2285
+
+# 動作確認メモ
+
+`bundle exec rackup config.ru -p <port>` で起動確認
