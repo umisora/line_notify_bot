@@ -15,6 +15,7 @@ def client
 end
 
 def push(message)
+  puts "Start Push Message #{ENV['TARGET_IDS']} #{message}"
   ENV['TARGET_IDS'].split(",").each{ |id|
     client.push_message(id,message)
   }
@@ -66,6 +67,7 @@ post '/line' do
 end
 
 post '/backlog' do
+  puts "Called Backlog!!"
   body = request.body.read
   body_json = JSON.parse(body)
 
