@@ -134,10 +134,10 @@ post '/backlog' do
     assignee = body_json["content"]["assignee"]["name"]
     by_user = body_json["createdUser"]["name"]
     url = "#{BACKLOG_URL}/view/#{projectkey}-#{ticket_id}"
-    message = "(ΦωΦ) [課題追加][#{projectname}][#{title}] #{description} by #{by_user} #{url}"
+    message = "(ΦωΦ) [課題追加]#{projectname} #{title} #{description} by #{by_user} #{url}"
     push(message)
 
-    message = "(ΦωΦ) [アサイン][#{projectname}][#{title}] #{assignee}にアサインしたよ！ #{url}"
+    message = "(ΦωΦ) [アサイン]#{projectname} #{title} #{assignee}にアサインしたよ！ #{url}"
     push(message,"#{assignee}")
 
   when 2 then
@@ -147,9 +147,9 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"]
     url = "#{BACKLOG_URL}/view/#{projectkey}-#{ticket_id}"
 
-    message = "(ΦωΦ) [課題更新][#{projectname}][#{title}] 更新があったよ！ by #{by_user} #{url}"
+    message = "(ΦωΦ) [課題更新]#{projectname} #{title} 更新があったよ！ by #{by_user} #{url}"
     push(message)
-    message = "(ΦωΦ) [アサイン][#{projectname}][#{title}] #{assignee}にアサインしたよ！ #{url}"
+    message = "(ΦωΦ) [アサイン]#{projectname} #{title} *#{assignee}にアサインしたよ！ #{url}"
     push(message,"#{assignee}")
 
   when 3 then
@@ -159,7 +159,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"] 
     url = "#{BACKLOG_URL}/view/#{projectkey}-#{ticket_id}"
 
-    message = "(ΦωΦ) [コメント][#{projectname}][#{title}] #{comment} by #{by_user} #{url}"
+    message = "(ΦωΦ) [コメント]#{projectname} #{title} #{comment} by #{by_user} #{url}"
     push(message)
   when 4 then
     ticket_id = body_json["content"]["key_id"]
@@ -167,7 +167,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"] 
     url = "#{BACKLOG_URL}/view/#{projectkey}-#{ticket_id}"
     
-    message = "(ΦωΦ) [課題削除][#{projectname}]「#{title}」が削除されました by #{by_user}"
+    message = "(ΦωΦ) [課題削除]#{projectname} #{title} が削除されました by #{by_user}"
     push(message)
 
   # wiki
@@ -176,7 +176,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"]
     url = "#{BACKLOG_URL}/wiki/#{projectkey}/#{page}"
 
-    message = "(ΦωΦ) [Wiki追加][#{projectname}] #{page} by #{by_user} #{url}"
+    message = "(ΦωΦ) [Wiki追加]#{projectname} #{page} by #{by_user} #{url}"
     push(message)
 
   when 6 then
@@ -184,7 +184,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"]
     url = "#{BACKLOG_URL}/wiki/#{projectkey}/#{page}"
     
-    message = "(ΦωΦ) [Wiki更新][#{projectname}] #{page} by #{by_user} #{url}"
+    message = "(ΦωΦ) [Wiki更新]#{projectname} #{page} by #{by_user} #{url}"
     push(message)
 
   when 7 then
@@ -192,7 +192,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"]
     url = "#{BACKLOG_URL}/wiki/#{projectkey}/#{page}"
     
-    message = "(ΦωΦ) [Wiki削除][#{projectname}] #{page}by #{by_user}"
+    message = "(ΦωΦ) [Wiki削除]#{projectname} #{page} by #{by_user}"
     push(message)
 
   # その他
