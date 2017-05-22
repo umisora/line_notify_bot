@@ -25,6 +25,23 @@ def get_lineids(names)
   ids
 end
 
+def get_backlog_status(id)
+  case id
+  when 1 then #未対応
+    status = "未対応"
+  when 2 then #処理中
+    status = "処理中"
+  when 3 then #処理済み
+    status = "処理済"
+  when 4 then #完了
+    status = "完了"
+  else 
+    status = "Unknown"
+  end
+
+  status
+end
+
 def push(message, *ids)
   message = {
     type: 'text',
@@ -87,6 +104,9 @@ post '/backlog' do
   puts "Called Backlog!!"
   body = request.body.read
   body_json = JSON.parse(body)
+  puts "request json----------------------"
+  puts body_json
+  puts "----------------------------------"
   # https://developer.nulab-inc.com/ja/docs/backlog/api/2/get-recent-updates/
   # 最近の更新の種別：
   # 1:課題の追加
@@ -144,12 +164,18 @@ post '/backlog' do
     ticket_id = body_json["content"]["key_id"]
     title =  body_json["content"]["summary"]
     assignee = body_json["content"]["changes"].select{|change| change["field"]=="assigner"}[0]["new_value"]
+    status_id_old = body_json["content"]["changes"].select{|change| change["field"]=="status"}[0]["old_value"]
+    status_id_new = body_json["content"]["changes"].select{|change| change["field"]=="status"}[0]["new_value"]
     by_user = body_json["createdUser"]["name"]
+
+    status_old = get_backlog_status(status_id_old)
+    status_new = get_backlog_status(status_id_new)
+    
     url = "#{BACKLOG_URL}/view/#{projectkey}-#{ticket_id}"
 
-    message = "(ΦωΦ) [課題更新]#{projectname} #{title} 更新があったよ！ by #{by_user} #{url}"
+    message = "(ΦωΦ) [課題更新][#{projectname}] #{title} 更新があったよ！ by #{by_user} #{url}"
     push(message)
-    message = "(ΦωΦ) [アサイン]#{projectname} #{title} *#{assignee}にアサインしたよ！ #{url}"
+    message = "(ΦωΦ) [アサイン][#{projectname}] #{title} *#{assignee}にアサインしたよ！ #{url}"
     push(message,"#{assignee}")
 
   when 3 then
