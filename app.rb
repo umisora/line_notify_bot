@@ -154,30 +154,29 @@ post '/backlog' do
     assignee = body_json["content"]["assignee"]["name"]
     by_user = body_json["createdUser"]["name"]
     url = "#{BACKLOG_URL}/view/#{projectkey}-#{ticket_id}"
-    message = "(ΦωΦ) [課題追加]#{projectname} #{title} #{description} by #{by_user} #{url}"
+    message = "(ΦωΦ) [課題追加]\n[#{title}]\n#{description} \nby #{by_user} \n#{url}"
     push(message)
 
-    message = "(ΦωΦ) [アサイン]#{projectname} #{title} #{assignee}にアサインしたよ！ #{url}"
+    message = "(ΦωΦ) [アサイン]\n[#{title}]\n#{assignee}にアサインしたよ！ \n#{url}"
     push(message,"#{assignee}")
 
   when 2 then
     ticket_id = body_json["content"]["key_id"]
     title =  body_json["content"]["summary"]
-    assignee = body_json["content"]["changes"].select{|change| change["field"]=="assigner"}[0]["new_value"]
-    status_id_old = body_json["content"]["changes"].select{|change| change["field"]=="status"}[0]["old_value"]
-    status_id_new = body_json["content"]["changes"].select{|change| change["field"]=="status"}[0]["new_value"]
+    assignee = body_json["content"]["assignee"]["name"]
+    status = body_json["content"]["status"]["name"]
+    is_assignee_change = body_json["content"]["changes"].select{|change| change["field"]=="assignee"}[0].nil? || false # true = no_change / false = change
     by_user = body_json["createdUser"]["name"]
-
-    status_old = get_backlog_status(status_id_old)
-    status_new = get_backlog_status(status_id_new)
     
     url = "#{BACKLOG_URL}/view/#{projectkey}-#{ticket_id}"
 
-    message = "(ΦωΦ) [課題更新][#{projectname}] #{title} 更新があったよ！ by #{by_user} #{url}"
+    message = "(ΦωΦ) [課題更新]\n##{title}(#{status})\n更新があったよ！ \nby #{by_user}\n#{url}"
     push(message)
-    message = "(ΦωΦ) [アサイン][#{projectname}] #{title} *#{assignee}にアサインしたよ！ #{url}"
-    push(message,"#{assignee}")
-
+    # アサイン変更があった場合は通知
+    unless is_assignee_change then
+      message = "(ΦωΦ) [アサイン]\n##{title}\n*#{assignee}にアサインしたよ！\n#{url}"
+      push(message,"#{assignee}")
+    end
   when 3 then
     ticket_id = body_json["content"]["key_id"]
     title =  body_json["content"]["summary"]
@@ -185,7 +184,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"] 
     url = "#{BACKLOG_URL}/view/#{projectkey}-#{ticket_id}"
 
-    message = "(ΦωΦ) [コメント]#{projectname} #{title} #{comment} by #{by_user} #{url}"
+    message = "(ΦωΦ) [コメント]\n##{title}\n#{comment} \nby #{by_user}\n#{url}"
     push(message)
   when 4 then
     ticket_id = body_json["content"]["key_id"]
@@ -193,7 +192,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"] 
     url = "#{BACKLOG_URL}/view/#{projectkey}-#{ticket_id}"
     
-    message = "(ΦωΦ) [課題削除]#{projectname} #{title} が削除されました by #{by_user}"
+    message = "(ΦωΦ) [課題削除]\n#{title}\n削除されたよ！ \nby #{by_user}"
     push(message)
 
   # wiki
@@ -202,7 +201,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"]
     url = "#{BACKLOG_URL}/wiki/#{projectkey}/#{page}"
 
-    message = "(ΦωΦ) [Wiki追加]#{projectname} #{page} by #{by_user} #{url}"
+    message = "(ΦωΦ) [Wiki追加]\n#{page}\nby #{by_user}\n#{url}"
     push(message)
 
   when 6 then
@@ -210,7 +209,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"]
     url = "#{BACKLOG_URL}/wiki/#{projectkey}/#{page}"
     
-    message = "(ΦωΦ) [Wiki更新]#{projectname} #{page} by #{by_user} #{url}"
+    message = "(ΦωΦ) [Wiki更新]\n#{page}\nby #{by_user}\n#{url}"
     push(message)
 
   when 7 then
@@ -218,7 +217,7 @@ post '/backlog' do
     by_user = body_json["createdUser"]["name"]
     url = "#{BACKLOG_URL}/wiki/#{projectkey}/#{page}"
     
-    message = "(ΦωΦ) [Wiki削除]#{projectname} #{page} by #{by_user}"
+    message = "(ΦωΦ) [Wiki削除]\n#{page} \nby #{by_user}"
     push(message)
 
   # その他
